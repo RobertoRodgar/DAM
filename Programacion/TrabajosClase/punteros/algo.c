@@ -3,6 +3,7 @@
 #include <string.h>
 #define MAX_NOMBRE 20
 #define MAX_ESTUDIANTES 20
+#define MAX_BUFFER 200
 
 typedef struct {
 	char nombre[MAX_NOMBRE];
@@ -35,6 +36,43 @@ void inicializacion(Estudiante * estudiante_a_rellenar, char * nombre, int edad,
 
 
 }
+//Tiene que reciubir un puntero a estudiante porque tiene que modificar la variable que va a recibir. Si no no haria falta
+void cumpleaños(Estudiante * cumpleaños){
+	cumpleaños->edad++;
+}
+/*
+Vamos a crear una funcion para imprimir un estudiante lo vamos a hacer de dos formas
+*/
+
+void imprimirEstudiante(const Estudiante * estudiante_a_imprimir){
+	printf("Nombre: %s\n",estudiante_a_imprimir->nombre);
+	printf("\tEdad: %d\n",estudiante_a_imprimir->edad);
+	printf("\tNota: %f\n",estudiante_a_imprimir->nota);
+}
+
+/*
+UNA FUNCION DE IMPRIMIR SIN LOS PRINTF
+*/
+//Convertir un estudiante a una cadena de texto
+//Esta funcio da un warnig porque la variable retval deja de existir cuandoa caba la funcion
+/*char * estudianteToString_warning(const Estudiante * datos){
+	char retval[MAX_BUFFER];
+	//snprintf (donde,cuanto, el qué [los que harias con printf])
+	snprintf(retval,MAX_BUFFER,"El estudiante %s de %d años ha sacado un %f", datos->nombre, datos->edad, datos->nota);
+
+	return retval;
+}*/ //Quiero que sea una varible del main que aqui se utiliza y aqui se rellena
+void estudianteToString(const Estudiante * datos,char * retval){
+
+	//snprintf (donde,cuanto, el qué [los que harias con printf])
+	snprintf(retval, MAX_BUFFER * sizeof(char),"El estudiante %s de %d años ha sacado un %f", datos->nombre, datos->edad, datos->nota);
+
+}
+void modificarNombreEstudiante(Estudiante * modificado){
+	printf("Nombre antiguo: %s\n", modificado->nombre);
+	printf("Introduce el nuevo nombre: ");
+	scanf("%s", modificado->nombre);
+}
 
 int main (){
 	Estudiante listado[MAX_ESTUDIANTES];//Aqui se reserva la memoria para los estudiantes. Los 560 bytes (de 20 que es el maximo)
@@ -65,6 +103,18 @@ int main (){
 	inicializacion(&listado[i], nombre, edad, nota);
 	}
 
+	printf("Edad antigua de %s: %d\n",listado[0].nombre ,listado->edad);
+	cumpleaños(&listado[0]/*Direccion de memoria del primer estudiante*/);
+	//cumpleaños(listado);
+	printf("Edad nueva: %d\n", listado[0].edad);
 	
+	imprimirEstudiante(&listado[0]);
+	
+	char StringARelenar[MAX_BUFFER];
+	estudianteToString(&listado[0],StringARelenar);
+	printf("%s\n",StringARelenar);
+
+	modificarNombreEstudiante(&listado[0]);
+	printf("Nombre nuevo: %s\n", listado[0].nombre);
 	return 0;
 }
