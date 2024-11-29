@@ -65,7 +65,13 @@ typedef struct{
         {40, "Thus Spoke Zarathustra", "Friedrich Nietzsche", 14.99, ENSAYO, 10}
     }; 
 
-    void buscarIdLibro(){
+    void mostrarLibros(Libro *){
+        for(int i = 0; i < 40; i++){
+            printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[i].id,libros[i].titulo,libros[i].autor,libros[i].precio,libros[i].genero,libros[i].cantidad); 
+        }
+    }
+
+    void buscarIdLibro(Libro * ){
     	
     	int busqueda;
     	 printf("Introduce el ID que quieres buscar: ");
@@ -73,13 +79,70 @@ typedef struct{
 
     	 for(int i = 0; i < 40; i++){
     	 	if(i == busqueda){
-    	 		printf("%s\n", libros[i]);
+    	 		printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[41+i].id,libros[i-1].titulo,libros[i-1].autor,libros[i-1].precio,libros[i-1].genero,libros[i-1].cantidad);
     	 	}
     	 }
+
+    }
+    void añadirLibros(Libro *){
+        int busquita;
+        int añadido;
+        char opcion;
+        while(1){
+            printf("Quieres añadir alguna unidad a un libro?(s=si, n=no)\n");
+            scanf(" %c", &opcion);
+            if(opcion == 's'){
+            printf("Escribe el ID del libro que quieres añadir mas unidades: ");
+            scanf("%d", &busquita);
+            for(int i = 0; i < 40 ; i++){
+              if(busquita == libros[i-1].id){
+                printf("¿Cuantas unidades quieres añadir?\n");
+                scanf("%d", &añadido);
+                libros[i].id += añadido;
+                printf("El libro con id %i ahora tiene %d unidades.\n", libros[i-1].id, libros[i].cantidad);
+                }
+            }
+            }else if(opcion == 'n'){
+                printf("No se añadiran mas libros.\n");
+                break;
+            }else {
+                printf("Introduce una opcion válida.\n");
+            }
+        }
+
+    //     printf("¿Cuantos libros quieres añadir?\n");
+    //     scanf("%d", &añadido);
+
+    //     if(añadido > 0){
+    //         for(int i = 0; i < añadido; i++){
+    //             libros[41+i].id = 41 + i;
+    //             printf("Introduce el título del libro:");
+    //             fgets(libros[41+i].titulo, sizeof(libros[41 + i].titulo), stdin);
+    //             fgets(libros[41+i].titulo, sizeof(libros[41 + i].titulo), stdin);
+    //             printf("Introduce el nombre del autor del libro:");
+    //             fgets(libros[41+i].autor, sizeof(libros[41 + i].autor), stdin);
+    //             printf("Introduce el precio del libro:");
+    //             scanf("%f", &libros[41+i].precio);
+    //             printf("Introduce el género del libro (0=Ficción, 1=No ficción, 2=Poesia, 3=Teatro, 4=Ensayo):");
+    //             scanf("%i", (int *)&libros[41+i].genero);
+    //             printf("Introduce la cantidad total del libro: ");
+    //             scanf("%d", &libros[41+i].cantidad);
+
+    //             printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i con %d unidades se ha añadido correctamente.\n",libros[41+i].id,libros[41+i].titulo,libros[41+i].autor,libros[41+i].precio,libros[41+i].genero,libros[41+i].cantidad);
+    //     }
+    // }else if(añadido == 0){
+    //     printf("No se han añadido libros nuevos.\n");
+    // }else {
+    //     printf("Introduce un número valido.\n");
+    // }
+
     }
 
     int main() {
+        mostrarLibros(libros);
 
-    	buscarIdLibro();
-    	return 0;
+    	buscarIdLibro(libros);
+    	
+        añadirLibros(libros);
+        return 0;
     }
