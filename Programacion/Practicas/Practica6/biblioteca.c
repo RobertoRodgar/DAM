@@ -74,15 +74,18 @@ typedef struct{
     void buscarIdLibro(Libro * ){
     	
     	int busqueda;
-    	 printf("Introduce el ID que quieres buscar: ");
-    	 scanf("%d", &busqueda);
+    	printf("Introduce el ID que quieres buscar: ");
+    	scanf("%d", &busqueda);
 
-    	 for(int i = 0; i < 40; i++){
-    	 	if(i == busqueda){
-    	 		printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[41+i].id,libros[i-1].titulo,libros[i-1].autor,libros[i-1].precio,libros[i-1].genero,libros[i-1].cantidad);
-    	 	}
-    	 }
-
+        if (busqueda <= 0 || busqueda > 40){
+            printf("Introduce un ID válido\n");
+        }else{
+    	   for(int i = 0; i < 40; i++){
+    	       if(i + 1 == busqueda ){
+                    printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[i].id,libros[i].titulo,libros[i].autor,libros[i].precio,libros[i].genero,libros[i].cantidad);
+    	 	    }
+            }
+        }
     }
     void añadirLibros(Libro *){
         int busquita;
@@ -98,8 +101,8 @@ typedef struct{
               if(busquita == libros[i-1].id){
                 printf("¿Cuantas unidades quieres añadir?\n");
                 scanf("%d", &añadido);
-                libros[i].id += añadido;
-                printf("El libro con id %i ahora tiene %d unidades.\n", libros[i-1].id, libros[i].cantidad);
+                libros[i - 1].cantidad += añadido;
+                printf("El libro con id %i ahora tiene %d unidades.\n", libros[i-1].id, libros[i - 1].cantidad);
                 }
             }
             }else if(opcion == 'n'){
@@ -109,33 +112,22 @@ typedef struct{
                 printf("Introduce una opcion válida.\n");
             }
         }
+    }
 
-    //     printf("¿Cuantos libros quieres añadir?\n");
-    //     scanf("%d", &añadido);
+    void mostarCat(Libro *){
+       int buscarCat;
 
-    //     if(añadido > 0){
-    //         for(int i = 0; i < añadido; i++){
-    //             libros[41+i].id = 41 + i;
-    //             printf("Introduce el título del libro:");
-    //             fgets(libros[41+i].titulo, sizeof(libros[41 + i].titulo), stdin);
-    //             fgets(libros[41+i].titulo, sizeof(libros[41 + i].titulo), stdin);
-    //             printf("Introduce el nombre del autor del libro:");
-    //             fgets(libros[41+i].autor, sizeof(libros[41 + i].autor), stdin);
-    //             printf("Introduce el precio del libro:");
-    //             scanf("%f", &libros[41+i].precio);
-    //             printf("Introduce el género del libro (0=Ficción, 1=No ficción, 2=Poesia, 3=Teatro, 4=Ensayo):");
-    //             scanf("%i", (int *)&libros[41+i].genero);
-    //             printf("Introduce la cantidad total del libro: ");
-    //             scanf("%d", &libros[41+i].cantidad);
-
-    //             printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i con %d unidades se ha añadido correctamente.\n",libros[41+i].id,libros[41+i].titulo,libros[41+i].autor,libros[41+i].precio,libros[41+i].genero,libros[41+i].cantidad);
-    //     }
-    // }else if(añadido == 0){
-    //     printf("No se han añadido libros nuevos.\n");
-    // }else {
-    //     printf("Introduce un número valido.\n");
-    // }
-
+       printf("Introduce la categoria de los libros que quieres mostrar (1=Ficcion, 2=No ficción, 3=Poesía, 4=Teatro, 5=Ensayo):\n");
+       scanf("%d", &buscarCat);
+       if (buscarCat < 1 || buscarCat > 5){
+        printf("Introduce una categoria válida");
+       }else {
+            for (int i = 0; i < 40; i++){
+            if (libros[i].genero == buscarCat){
+                printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[i].id,libros[i].titulo,libros[i].autor,libros[i].precio,libros[i].genero,libros[i].cantidad);
+            }
+                }
+       }
     }
 
     int main() {
@@ -144,5 +136,7 @@ typedef struct{
     	buscarIdLibro(libros);
     	
         añadirLibros(libros);
+
+        mostarCat(libros);
         return 0;
     }
