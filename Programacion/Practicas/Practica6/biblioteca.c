@@ -2,24 +2,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_TITULO 	80
+#define MAX_TITULO  80
 #define MAX_AUTOR 50
 
 typedef enum{
-	FICCION,
-	NO_FICCION,
-	POESIA,
-	TEATRO,
-	ENSAYO
+    FICCION,
+    NO_FICCION,
+    POESIA,
+    TEATRO,
+    ENSAYO
 } Genero;
 
 typedef struct{
-	int id;
-	char titulo[MAX_TITULO];
-	char autor[MAX_AUTOR];
-	float precio;
-	Genero genero;
-	int cantidad;
+    int id;
+    char titulo[MAX_TITULO];
+    char autor[MAX_AUTOR];
+    float precio;
+    Genero genero;
+    int cantidad;
 } Libro;
 
     Libro libros[40] = {
@@ -72,18 +72,18 @@ typedef struct{
     }
 
     void buscarIdLibro(Libro * ){
-    	
-    	int busqueda;
-    	printf("Introduce el ID que quieres buscar: ");
-    	scanf("%d", &busqueda);
+        
+        int busqueda;
+        printf("Introduce el ID que quieres buscar: ");
+        scanf("%d", &busqueda);
 
         if (busqueda <= 0 || busqueda > 40){
             printf("Introduce un ID válido\n");
         }else{
-    	   for(int i = 0; i < 40; i++){
-    	       if(i + 1 == busqueda ){
+           for(int i = 0; i < 40; i++){
+               if(i + 1 == busqueda ){
                     printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[i].id,libros[i].titulo,libros[i].autor,libros[i].precio,libros[i].genero,libros[i].cantidad);
-    	 	    }
+                }
             }
         }
     }
@@ -97,12 +97,12 @@ typedef struct{
             if(opcion == 's'){
             printf("Escribe el ID del libro que quieres añadir mas unidades: ");
             scanf("%d", &busquita);
-            for(int i = 0; i < 40 ; i++){
-              if(busquita == libros[i-1].id){
+            for(int i = 1; i < 41 ; i++){
+              if(busquita == libros[i].id){
                 printf("¿Cuantas unidades quieres añadir?\n");
                 scanf("%d", &añadido);
-                libros[i - 1].cantidad += añadido;
-                printf("El libro con id %i ahora tiene %d unidades.\n", libros[i-1].id, libros[i - 1].cantidad);
+                libros[i].cantidad += añadido;
+                printf("El libro con id %i ahora tiene %d unidades.\n", libros[i].id, libros[i].cantidad);
                 }
             }
             }else if(opcion == 'n'){
@@ -133,8 +133,8 @@ typedef struct{
     int main() {
         mostrarLibros(libros);
 
-    	buscarIdLibro(libros);
-    	
+        buscarIdLibro(libros);
+        
         añadirLibros(libros);
 
         mostarCat(libros);
