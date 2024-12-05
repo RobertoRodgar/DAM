@@ -5,7 +5,7 @@
 #define MAX_TITULO  80
 #define MAX_AUTOR 50
 
-typedef enum{
+typedef enum{ //Genero un enum que se llame Libro para que la proxima variable que cree tenga los parametros de este.
     FICCION,
     NO_FICCION,
     POESIA,
@@ -13,7 +13,7 @@ typedef enum{
     ENSAYO
 } Genero;
 
-typedef struct{
+typedef struct{ //Genero un struct que se llame Libro para que la proxima variable que cree tenga los parametros de este.
     int id;
     char titulo[MAX_TITULO];
     char autor[MAX_AUTOR];
@@ -22,7 +22,7 @@ typedef struct{
     int cantidad;
 } Libro;
 
-    Libro libros[40] = {
+    Libro libros[40] = { //Array con los libros y base del struct creado antes
         {1, "To Kill a Mockingbird", "Harper Lee", 15.99, FICCION, 10},
         {2, "1984", "George Orwell", 12.49, FICCION, 5},
         {3, "The Great Gatsby", "F. Scott Fitzgerald", 10.99, FICCION, 8},
@@ -65,13 +65,13 @@ typedef struct{
         {40, "Thus Spoke Zarathustra", "Friedrich Nietzsche", 14.99, ENSAYO, 10}
     }; 
 
-    void mostrarLibros(Libro *){
+    void mostrarLibros(Libro *){ //Mostrar todos los libros
         for(int i = 0; i < 40; i++){
             printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[i].id,libros[i].titulo,libros[i].autor,libros[i].precio,libros[i].genero,libros[i].cantidad); 
         }
     }
 
-    void buscarIdLibro(Libro * ){
+    void buscarIdLibro(Libro * ){ //Buscar un libro por el ID introducido
         
         int busqueda;
         printf("Introduce el ID que quieres buscar: ");
@@ -87,7 +87,7 @@ typedef struct{
             }
         }
     }
-    void añadirLibros(Libro *){
+    void añadirLibros(Libro *){ //Añadir una cantidad a un libro a traves de su ID
         int busquita;
         int añadido;
         char opcion;
@@ -97,7 +97,7 @@ typedef struct{
             if(opcion == 's'){
             printf("Escribe el ID del libro que quieres añadir mas unidades: ");
             scanf("%d", &busquita);
-            for(int i = 1; i < 41 ; i++){
+            for(int i = 0; i < 41 ; i++){
               if(busquita == libros[i].id){
                 printf("¿Cuantas unidades quieres añadir?\n");
                 scanf("%d", &añadido);
@@ -114,7 +114,7 @@ typedef struct{
         }
     }
 
-    void mostarCat(Libro *){
+    void mostarCat(Libro *){  //Un bucle que recorre el array de libro comparando la cataegoria a buscar y mostrando cuando coincide
        int buscarCat;
 
        printf("Introduce la categoria de los libros que quieres mostrar (1=Ficcion, 2=No ficción, 3=Poesía, 4=Teatro, 5=Ensayo):\n");
@@ -131,7 +131,7 @@ typedef struct{
     }
 
     int main() {
-        mostrarLibros(libros);
+        mostrarLibros(libros); //Dentro se pone libro porque es un parametro que se le pasara a la funcion que espera un puntero de tipo Libro como es en este caso.
 
         buscarIdLibro(libros);
         
