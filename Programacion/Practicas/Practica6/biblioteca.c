@@ -71,7 +71,8 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         }
     }
 
-    void buscarIdLibro(Libro * ){ //Buscar un libro por el ID introducido
+
+    void mostrarIdLibro(Libro * ){ //Buscar un libro por el ID introducido
         
         int busqueda;
         printf("Introduce el ID que quieres buscar: ");
@@ -87,6 +88,20 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
             }
         }
     }
+
+    void buscarIdLibro(Libro *, int busqueda){ //Buscar un libro por el ID introducido
+
+        if (busqueda <= 0 || busqueda > 40){
+            printf("Introduce un ID válido\n");
+        }else{
+           for(int i = 0; i < 40; i++){
+               if(i + 1 == busqueda ){
+                    printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[i].id,libros[i].titulo,libros[i].autor,libros[i].precio,libros[i].genero,libros[i].cantidad);
+                }
+            }
+        }
+    }
+
     void añadirLibros(Libro *){ //Añadir una cantidad a un libro a traves de su ID
         int busquita;
         int añadido;
@@ -114,6 +129,15 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         }
     }
 
+    void añadirStockLibros(Libro *, int busquita, int añadido){ //Añadir una cantidad a un libro a traves de su ID
+        for(int i = 0; i < 41 ; i++){
+            if(busquita == libros[i].id){
+                libros[i].cantidad += añadido;
+                printf("El libro con id %i ahora tiene %d unidades.\n", libros[i].id, libros[i].cantidad);
+            }
+        }
+    }
+
     void mostarCat(Libro *){  //Un bucle que recorre el array de libro comparando la cataegoria a buscar y mostrando cuando coincide
        int buscarCat;
 
@@ -130,13 +154,60 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
        }
     }
 
-    int main() {
-        mostrarLibros(libros); //Dentro se pone libro porque es un parametro que se le pasara a la funcion que espera un puntero de tipo Libro como es en este caso.
+int main(int argc, char ** argv){
 
-        buscarIdLibro(libros);
+   printf("Lista de arguemtos (hay %d argumentos):\n",argc);
+    for(int i = 0; i<argc; i++){
+    printf("\t Argumento %d: %s\n",i,argv[i]);
+    }
+
+    if (argc == 1){
+        // Caso inicial.
+            mostrarLibros(libros);
+            mostrarIdLibro(libros);
+            añadirLibros(libros);
+            mostarCat(libros);
+
+    } else if(argc == 2){
+        // Mostrar o en añadir
+
+        if (strcmp(argv[1],"mostrar") == 0){
+            // Llamo a la función mostrar todos los libros
+            mostrarLibros(libros);
+            printf("Llamo a la función mostrar\n");
+
+        }else if (strcmp(argv[1],"añadir") == 0){
+            // Llamos a la funcion añadir
+
+            printf("Llamo a la función añadir\n");
+        }else if(strcmp(argv[1],"todo") == 0){
+            // Hacemos todas las funciones
+            mostrarLibros(libros);
+            mostrarIdLibro(libros);
+            añadirLibros(libros);
+            mostarCat(libros);
+        }
+    } else if(argc == 3){
+        // Distinguir mostrar
+            if(strcmp(argv[1],"mostrar") == 0){
+                int id = atoi(argv[2]);
+                buscarIdLibro(libros, id);
+            }
+
+    } else if (argc == 4){
+        // ...
+        if (strcmp(argv[1], "stock") == 0){
+            int id = atoi(argv[2]);
+            int cantidad = atoi(argv[3]);
+            añadirStockLibros(libros, id, cantidad);
+        }
+    }
+         //Dentro se pone libro porque es un parametro que se le pasara a la funcion que espera un puntero de tipo Libro como es en este caso.
+
+        //mostrarIdLibro(libros);
         
-        añadirLibros(libros);
+        //añadirLibros(libros);
 
-        mostarCat(libros);
+        //mostarCat(libros);
         return 0;
     }
