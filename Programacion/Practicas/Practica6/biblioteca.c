@@ -22,6 +22,8 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
     int cantidad;
 } Libro;
 
+    Libro * libros = (Libro *) malloc(40 * sizeof(Libro));
+    
     Libro libros[40] = { //Array con los libros y base del struct creado antes
         {1, "To Kill a Mockingbird", "Harper Lee", 15.99, FICCION, 10},
         {2, "1984", "George Orwell", 12.49, FICCION, 5},
@@ -65,9 +67,22 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         {40, "Thus Spoke Zarathustra", "Friedrich Nietzsche", 14.99, ENSAYO, 10}
     }; 
 
+    const char* convertirGenero(Genero gen){
+        switch(gen){
+        case FICCION: return "Ficcion";
+        case NO_FICCION: return "No ficcion";
+        case POESIA: return "Poesia";
+        case TEATRO: return "Teatro";
+        case ENSAYO: return "Ensayo";
+        }
+    }
+    void mostrarLibro(const Libro* libro) {                     // Lo que hace es mostrar un libro.
+        printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %s quedan actualmente %d unidades.\n",
+           libro->id, libro->titulo, libro->autor, libro->precio, convertirGenero(libro->genero), libro->cantidad);
+}
     void mostrarLibros(Libro *){ //Mostrar todos los libros
         for(int i = 0; i < 40; i++){
-            printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[i].id,libros[i].titulo,libros[i].autor,libros[i].precio,libros[i].genero,libros[i].cantidad); 
+            mostrarLibro(&libros[i]); 
         }
     }
 
@@ -83,7 +98,7 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         }else{
            for(int i = 0; i < 40; i++){
                if(i + 1 == busqueda ){
-                    printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[i].id,libros[i].titulo,libros[i].autor,libros[i].precio,libros[i].genero,libros[i].cantidad);
+                    mostrarLibro(&libros[i]);
                 }
             }
         }
@@ -96,7 +111,7 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         }else{
            for(int i = 0; i < 40; i++){
                if(i + 1 == busqueda ){
-                    printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[i].id,libros[i].titulo,libros[i].autor,libros[i].precio,libros[i].genero,libros[i].cantidad);
+                    mostrarLibro(&libros[i]);
                 }
             }
         }
@@ -147,11 +162,25 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         printf("Introduce una categoria válida");
        }else {
             for (int i = 0; i < 40; i++){
-            if (libros[i].genero == buscarCat){
-                printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %i quedan actualmente %d unidades.\n",libros[i].id,libros[i].titulo,libros[i].autor,libros[i].precio,libros[i].genero,libros[i].cantidad);
+            if (libros[i].genero == buscarCat-1){
+                mostrarLibro(&libros[i]);
             }
                 }
        }
+    }
+    void mostarCat2(Libro *,Genero gen){  //Un bucle que recorre el array de libro comparando la cataegoria a buscar y mostrando cuando coincide
+        for (int i = 0; i < 40; i++){
+            if (libros[i].genero == gen){
+                mostrarLibro(&libros[i]);
+            }
+        }
+    }
+    void mostrarAutor(Libro *,const char* autor){
+        for(int i = 0; i < 40; i++){
+            if (strcmp(libros[i].autor, autor) == 0){
+                mostrarLibro(&libros[i]);
+            }
+        }
     }
 
 int main(int argc, char ** argv){
@@ -192,6 +221,11 @@ int main(int argc, char ** argv){
             if(strcmp(argv[1],"mostrar") == 0){
                 int id = atoi(argv[2]);
                 buscarIdLibro(libros, id);
+            }else if(strcmp(argv[1],"categoria")== 0){
+                Genero gen = atoi(argv[2]);
+                mostarCat2(libros, gen);
+            }else if(strcmp(argv[1],"autor") == 0){
+                mostrarAutor(libros, argv[2]);
             }
 
     } else if (argc == 4){
@@ -199,7 +233,7 @@ int main(int argc, char ** argv){
         if (strcmp(argv[1], "stock") == 0){
             int id = atoi(argv[2]);
             int cantidad = atoi(argv[3]);
-            añadirStockLibros(libros, id, cantidad);
+            añadirStockLibros(libros, id, cantidad);   
         }
     }
          //Dentro se pone libro porque es un parametro que se le pasara a la funcion que espera un puntero de tipo Libro como es en este caso.
@@ -210,4 +244,5 @@ int main(int argc, char ** argv){
 
         //mostarCat(libros);
         return 0;
+        free(libros);
     }
