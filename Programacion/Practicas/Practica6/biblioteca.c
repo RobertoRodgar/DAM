@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_TITULO  80
-#define MAX_AUTOR 50
+#define MAX_TITULO  80  //Defino el maximo que podrá tener el titulo
+#define MAX_AUTOR 50    //Defino el maximo que podrá tener el autor
+#define MAX_CATALOGO 40 //Defino el maximo de libros que tendré 
 
 typedef enum{ //Genero un enum que se llame Libro para que la proxima variable que cree tenga los parametros de este.
     FICCION,
@@ -24,7 +25,7 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
 
     
 
-    const char* convertirGenero(Genero gen){
+    const char* convertirGenero(Genero gen){ //Hago un función que reciba de parametro algo de tipo "Genero" y con un switch hacemos que nos devuelva el valor pero en texto 
         switch(gen){
         case FICCION: return "Ficcion";
         case NO_FICCION: return "No ficcion";
@@ -33,18 +34,18 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         case ENSAYO: return "Ensayo";
         }
     }
-    void mostrarLibro(const Libro* libro) {                     // Lo que hace es mostrar un libro.
+    void mostrarLibro(const Libro* libro) { //Es una funcion la cual imprime los libros para no usar printf repetidamente en la cual uso convertir genero
         printf("El libro con ID %i de título %s cuyo autor es %s, su precio es %0.2f€, genero %s quedan actualmente %d unidades.\n",
            libro->id, libro->titulo, libro->autor, libro->precio, convertirGenero(libro->genero), libro->cantidad);
 }
-    void mostrarLibros(Libro * libros){ //Mostrar todos los libros
+    void mostrarLibros(Libro * libros){ //Un bucle para mostrar todos los libros
         for(int i = 0; i < 40; i++){
-            mostrarLibro(&libros[i]); 
+            mostrarLibro(&libros[i]);//De argumento se le da libros que es la funcion que se le dio como parametro la cual es la biblioteca realmente 
         }
     }
 
 
-    void mostrarIdLibro(Libro * libros){ //Buscar un libro por el ID introducido
+    void mostrarIdLibro(Libro * libros){ //Un bucle que recorre todos los libros hasta encontrar el ID indicado
         
         int busqueda;
         printf("Introduce el ID que quieres buscar: ");
@@ -61,7 +62,7 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         }
     }
 
-    void buscarIdLibro(Libro * libros, int busqueda){ //Buscar un libro por el ID introducido
+    void buscarIdLibro(Libro * libros, int busqueda){ //El mismo bucle para buscar id pero recibiendo un id a buscar a la vez que se ejecuta el codigo.
 
         if (busqueda <= 0 || busqueda > 40){
             printf("Introduce un ID válido\n");
@@ -74,7 +75,7 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         }
     }
 
-    void añadirLibros(Libro * libros){ //Añadir una cantidad a un libro a traves de su ID
+    void añadirLibros(Libro * libros){ //Añadir una cantidad a un libro a traves de una busqueda que hacen con su ID
         int busquita;
         int añadido;
         char opcion;
@@ -101,8 +102,8 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         }
     }
 
-    void añadirStockLibros(Libro * libros, int busquita, int añadido){ //Añadir una cantidad a un libro a traves de su ID
-        for(int i = 0; i < 41 ; i++){
+    void añadirStockLibros(Libro * libros, int busquita, int añadido){ //Añade también una cantidad de libro pero con un ID introducido al ejecutar el comando
+        for(int i = 0; i < 40; i++){
             if(busquita == libros[i].id){
                 libros[i].cantidad += añadido;
                 printf("El libro con id %i ahora tiene %d unidades.\n", libros[i].id, libros[i].cantidad);
@@ -110,7 +111,7 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         }
     }
 
-    void mostarCat(Libro * libros){  //Un bucle que recorre el array de libro comparando la cataegoria a buscar y mostrando cuando coincide
+    void mostarCat(Libro * libros){ //Funcion que muestra todos los libros que sean de la misma categoria que la deseada
        int buscarCat;
 
        printf("Introduce la categoria de los libros que quieres mostrar (1=Ficcion, 2=No ficción, 3=Poesía, 4=Teatro, 5=Ensayo):\n");
@@ -125,33 +126,77 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
                 }
        }
     }
-    void mostarCat2(Libro * libros,Genero gen){  //Un bucle que recorre el array de libro comparando la cataegoria a buscar y mostrando cuando coincide
+    void mostarCat2(Libro * libros,Genero gen){ //Funcion que muestra los libros con la misma categoria que la introducida al ejecutar el codigo
         for (int i = 0; i < 40; i++){
             if (libros[i].genero == gen){
                 mostrarLibro(&libros[i]);
             }
         }
     }
-    void mostrarAutor(Libro * libros,const char* autor){
+    void mostrarAutor(Libro * libros,const char* autor){ //Funcion que busca los libros con el autor dado a traves de la linea de comandos
         for(int i = 0; i < 40; i++){
-            if (strcmp(libros[i].autor, autor) == 0){
+            if (strcmp(libros[i].autor, autor) == 0){ //strcmp es un comparador de dos str en este caso entre el autor de un libro y el autor que se busca
                 mostrarLibro(&libros[i]);
             }
         }
     }
-    void iniciarLibro(Libro * libro,int Id, char * Titulo,char * Autor, int Precio, int Genero,int Stock){
+    
+    void añadirLibro (Libro * biblioteca){  //Funcion para añadir un libro nuevo a la biblioteca
+        int añadido;
+        int cat;
+        printf("Introduce la cantidad de libros que quieres añadir: \n");
+        scanf("%d", &añadido);
+
+        int cantidadLibros = MAX_CATALOGO + añadido;
+        Libro * biblioteca2 = (Libro *) realloc(biblioteca,cantidadLibros * sizeof(Libro));//Hacemos un realloc con ayuda de de otra función para aumentar el tamaño de la memoria
+        if (biblioteca2 == NULL){
+            printf("ERROR. No se pudo reservar la memoria.\n");
+            return;
+        }
+
+        biblioteca = biblioteca2; //Igualamos ambas para poder seguir usando la principal
+        free(biblioteca2);
+
+        for(int i = 40; i < cantidadLibros; i++){
+            biblioteca[i].id = i + 1;
+
+            printf("Introduce el titulo del libro: \n");
+            scanf(" %[^\n]", biblioteca[i].titulo);//El "%[^\n] lo que hace es que lee una cadena de caracteres respetando los espacios hasta que haya un /n"
+
+            printf("Introduce el autor del libro: \n");
+            scanf(" %[^\n]", biblioteca[i].autor);
+
+            printf("Introduce el precio del libro: \n");
+            scanf("%f", &biblioteca[i].precio);
+
+            printf("Introduce el genero del libro (1=Ficcion, 2=No ficción, 3=Poesía, 4=Teatro, 5=Ensayo): \n");
+            scanf("%d", &cat);
+            biblioteca[i].genero = cat - 1;
+
+
+            printf("Introduce la cantidad disponible del libro: \n");
+            scanf("%d", &biblioteca[i].cantidad);
+
+            for(int i = 0; i < cantidadLibros; i++){
+                mostrarLibro(&biblioteca[i]);
+            }
+        }
+    }
+    void iniciarLibro(Libro * libro,int Id, char * Titulo,char * Autor, int Precio, int Genero,int Stock){ //Con esta funcion lo que hacemos es añadir los libros ya existentes a la memoria el cual sigue la estructura creada antes
         libro->id = Id;
-        strcpy(libro->titulo , Titulo);
+        strcpy(libro->titulo , Titulo);//strcpy lo que hace es copiar una cadena de caracteres para poder escribir los titulos en este caso con espacios.
         strcpy(libro->autor , Autor);
         libro->precio = Precio;
         libro->genero = Genero;
         libro->cantidad = Stock;
     }
-
 int main(int argc, char ** argv){
-    Libro * biblioteca = (Libro *) malloc(40 * sizeof(Libro));
+    Libro * biblioteca = (Libro *) malloc(MAX_CATALOGO * sizeof(Libro));//Creamos la biblioteca con malloc con un tamaño maximo definido antes y que cada uno tenga el tamaño del struc del principio
+    if (biblioteca == NULL){
+        printf("ERROR. No se pudo reservar la memoria.\n");
+    }
     
-        iniciarLibro( &biblioteca[0], 1, "To Kill a Mockingbird", "Harper Lee", 15.99, FICCION, 10);
+        iniciarLibro( &biblioteca[0], 1, "To Kill a Mockingbird", "Harper Lee", 15.99, FICCION, 10); //iniciarLibro hace lo ya explicado antes y aqui se les indica el espacio en el que debe guardarse cada uno
         iniciarLibro( &biblioteca[1], 2, "1984", "George Orwell", 12.49, FICCION, 5);
         iniciarLibro( &biblioteca[2], 3, "The Great Gatsby", "F. Scott Fitzgerald", 10.99, FICCION, 8);
         iniciarLibro( &biblioteca[3], 4, "Moby Dick", "Herman Melville", 18.99, FICCION, 12);
@@ -197,15 +242,14 @@ int main(int argc, char ** argv){
     printf("\t Argumento %d: %s\n",i,argv[i]);
     }
 
-    if (argc == 1){
-        // Caso inicial.
+    if (argc == 1){ //Un if el cual recorre todas las posibilidades de funciones que le puedes pedir
+        
             mostrarLibros(biblioteca);
             mostrarIdLibro(biblioteca);
             añadirLibros(biblioteca);
             mostarCat(biblioteca);
 
     } else if(argc == 2){
-        // Mostrar o en añadir
 
         if (strcmp(argv[1],"mostrar") == 0){
             // Llamo a la función mostrar todos los libros
@@ -214,19 +258,19 @@ int main(int argc, char ** argv){
 
         }else if (strcmp(argv[1],"añadir") == 0){
             // Llamos a la funcion añadir
-
-            printf("Llamo a la función añadir\n");
+            añadirLibro(biblioteca);
         }else if(strcmp(argv[1],"todo") == 0){
             // Hacemos todas las funciones
             mostrarLibros(biblioteca);
             mostrarIdLibro(biblioteca);
             añadirLibros(biblioteca);
             mostarCat(biblioteca);
+            añadirLibros(biblioteca);
         }
     } else if(argc == 3){
         // Distinguir mostrar
             if(strcmp(argv[1],"mostrar") == 0){
-                int id = atoi(argv[2]);
+                int id = atoi(argv[2]);//Lo que hace atoi es como lo que hace el void en las funciones, pero aqui lo que hace es transformar el contenido(ya sea numeros, letras, etc..) a cualquier cosa que s ele vaya a pedir/usar luego, en este caso int
                 buscarIdLibro(biblioteca, id);
             }else if(strcmp(argv[1],"categoria")== 0){
                 Genero gen = atoi(argv[2]);
@@ -243,13 +287,6 @@ int main(int argc, char ** argv){
             añadirStockLibros(biblioteca, id, cantidad);   
         }
     }
-         //Dentro se pone libro porque es un parametro que se le pasara a la funcion que espera un puntero de tipo Libro como es en este caso.
-
-        //mostrarIdLibro(libros);
-        
-        //añadirLibros(libros);
-
-        //mostarCat(libros);
         return 0;
         free(biblioteca);
     }
