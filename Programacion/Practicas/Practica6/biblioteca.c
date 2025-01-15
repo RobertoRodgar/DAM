@@ -4,7 +4,7 @@
 
 #define MAX_TITULO  80  //Defino el maximo que podrá tener el titulo
 #define MAX_AUTOR 50    //Defino el maximo que podrá tener el autor
-#define MAX_CATALOGO 40 //Defino el maximo de libros que tendré 
+int MAX_CATALOGO = 40; //Defino el maximo de libros que tendré 
 
 typedef enum{ //Genero un enum que se llame Libro para que la proxima variable que cree tenga los parametros de este.
     FICCION,
@@ -27,11 +27,12 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
 
     const char* convertirGenero(Genero gen){ //Hago un función que reciba de parametro algo de tipo "Genero" y con un switch hacemos que nos devuelva el valor pero en texto 
         switch(gen){
-        case FICCION: return "Ficcion";
-        case NO_FICCION: return "No ficcion";
-        case POESIA: return "Poesia";
-        case TEATRO: return "Teatro";
-        case ENSAYO: return "Ensayo";
+            case FICCION: return "Ficcion";
+            case NO_FICCION: return "No ficcion";
+            case POESIA: return "Poesia";
+            case TEATRO: return "Teatro";
+            case ENSAYO: return "Ensayo";
+            default: return 0;
         }
     }
     void mostrarLibro(const Libro* libro) { //Es una funcion la cual imprime los libros para no usar printf repetidamente en la cual uso convertir genero
@@ -85,7 +86,7 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
             if(opcion == 's'){
             printf("Escribe el ID del libro que quieres añadir mas unidades: ");
             scanf("%d", &busquita);
-            for(int i = 0; i < 41 ; i++){
+            for(int i = 0; i < 40 ; i++){
               if(busquita == libros[i].id){
                 printf("¿Cuantas unidades quieres añadir?\n");
                 scanf("%d", &añadido);
@@ -141,53 +142,56 @@ typedef struct{ //Genero un struct que se llame Libro para que la proxima variab
         }
     }
     
-    void añadirLibro (Libro * biblioteca){  //Funcion para añadir un libro nuevo a la biblioteca
+    void añadirLibro (Libro ** biblioteca){  //Funcion para añadir un libro nuevo a la biblioteca
         int añadido;
         int cat;
         printf("Introduce la cantidad de libros que quieres añadir: \n");
         scanf("%d", &añadido);
 
         int cantidadLibros = MAX_CATALOGO + añadido;
-        Libro * biblioteca2 = (Libro *) realloc(biblioteca,cantidadLibros * sizeof(Libro));//Hacemos un realloc con ayuda de de otra función para aumentar el tamaño de la memoria
+        Libro * biblioteca2 = (Libro *) realloc(*biblioteca,cantidadLibros * sizeof(Libro));//Hacemos un realloc con ayuda de de otra función para aumentar el tamaño de la memoria
         if (biblioteca2 == NULL){
             printf("ERROR. No se pudo reservar la memoria.\n");
             return;
         }
 
-        biblioteca = biblioteca2; //Igualamos ambas para poder seguir usando la principal
-        free(biblioteca2);
+        *biblioteca = biblioteca2; //Igualamos ambas para poder seguir usando la principal
+        //free(biblioteca2); Esto es un error porque  estoy liberando el contenido de biblioteca2 y al igualar bibliteca y biblioteca2, biblioteca apunta  a la misma direccion la cual ahora está liberada.
 
         for(int i = 40; i < cantidadLibros; i++){
-            biblioteca[i].id = i + 1;
+            (*biblioteca)[i].id = i + 1;
 
             printf("Introduce el titulo del libro: \n");
-            scanf(" %[^\n]", biblioteca[i].titulo);//El "%[^\n] lo que hace es que lee una cadena de caracteres respetando los espacios hasta que haya un /n"
-
+            //scanf(" %[^\n]", &(*(biblioteca[i]->titulo)));//El "%[^\n] lo que hace es que lee una cadena de caracteres respetando los espacios hasta que haya un /n"
+            
+            scanf(" %[^\n]", ((*biblioteca)[i]).titulo   );//El "%[^\n] lo que hace es que lee una cadena de caracteres respetando los espacios hasta que haya un /n"
+             
             printf("Introduce el autor del libro: \n");
-            scanf(" %[^\n]", biblioteca[i].autor);
+            scanf(" %[^\n]", ((*biblioteca)[i]).autor);
 
             printf("Introduce el precio del libro: \n");
-            scanf("%f", &biblioteca[i].precio);
+            scanf("%f", &(((*biblioteca)[i]).precio));
 
             printf("Introduce el genero del libro (1=Ficcion, 2=No ficción, 3=Poesía, 4=Teatro, 5=Ensayo): \n");
             scanf("%d", &cat);
-            biblioteca[i].genero = cat - 1;
+            
+            (*biblioteca)[i].genero = cat -1;
 
 
             printf("Introduce la cantidad disponible del libro: \n");
-            scanf("%d", &biblioteca[i].cantidad);
-
-            for(int i = 0; i < cantidadLibros; i++){
-                mostrarLibro(&biblioteca[i]);
-            }
+            scanf("%d", &(((*biblioteca)[i]).cantidad));
         }
+            for(int i = 0; i < cantidadLibros; i++){
+                mostrarLibro(&((*biblioteca)[i]));
+                //mostrarLibro((*biblioteca) + i);
+            }
     }
-    void iniciarLibro(Libro * libro,int Id, char * Titulo,char * Autor, int Precio, int Genero,int Stock){ //Con esta funcion lo que hacemos es añadir los libros ya existentes a la memoria el cual sigue la estructura creada antes
+    void iniciarLibro(Libro * libro,int Id, char * Titulo,char * Autor, int Precio, int gene,int Stock){ //Con esta funcion lo que hacemos es añadir los libros ya existentes a la memoria el cual sigue la estructura creada antes
         libro->id = Id;
         strcpy(libro->titulo , Titulo);//strcpy lo que hace es copiar una cadena de caracteres para poder escribir los titulos en este caso con espacios.
         strcpy(libro->autor , Autor);
         libro->precio = Precio;
-        libro->genero = Genero;
+        libro->genero = gene;
         libro->cantidad = Stock;
     }
 int main(int argc, char ** argv){
@@ -258,14 +262,13 @@ int main(int argc, char ** argv){
 
         }else if (strcmp(argv[1],"añadir") == 0){
             // Llamos a la funcion añadir
-            añadirLibro(biblioteca);
+            añadirLibro(&biblioteca);
         }else if(strcmp(argv[1],"todo") == 0){
             // Hacemos todas las funciones
             mostrarLibros(biblioteca);
             mostrarIdLibro(biblioteca);
             añadirLibros(biblioteca);
             mostarCat(biblioteca);
-            añadirLibros(biblioteca);
         }
     } else if(argc == 3){
         // Distinguir mostrar
@@ -287,6 +290,7 @@ int main(int argc, char ** argv){
             añadirStockLibros(biblioteca, id, cantidad);   
         }
     }
-        return 0;
         free(biblioteca);
+        return 0;
+        
     }
